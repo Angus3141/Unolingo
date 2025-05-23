@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Italian Menu</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; }
+    #menu-container { display: flex; flex-wrap: wrap; gap: 20px; }
+    .dish { border: 1px solid #ccc; padding: 10px; border-radius: 8px; width: calc(33% - 20px); box-sizing: border-box; }
+    .dish h3 { margin: 0 0 10px; }
+    .dish p { margin: 0 0 10px; }
+    .dish span { font-weight: bold; }
+  </style>
+  <!-- Tabletop.js to fetch from Google Sheets -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tabletop.js/1.5.4/tabletop.min.js"></script>
+</head>
+<body>
+  <h1>Italian Menu</h1>
+  <div id="menu-container"></div>
+
+  <script>
+    window.onload = function() {
+      // Replace YOUR_SHEET_ID with your Google Sheet's ID and ensure it's published to the web
+      Tabletop.init({
+        key: 'YOUR_SHEET_ID',
+        callback: showMenu,
+        simpleSheet: true
+      });
+    };
+
+    function showMenu(data) {
+      var container = document.getElementById('menu-container');
+      data.forEach(function(item) {
+        var dishDiv = document.createElement('div');
+        dishDiv.className = 'dish';
+        dishDiv.innerHTML =
+          '<h3>' + item.Dish + '</h3>' +
+          '<p>' + item.Description + '</p>' +
+          '<span>' + item.Price + '</span>';
+        container.appendChild(dishDiv);
+      });
+    }
+  </script>
+</body>
+</html>
