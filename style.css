@@ -1,0 +1,31 @@
+/* style.css */
+body {
+  font-family: sans-serif;
+  padding: 20px;
+}
+
+#menu-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.dish {
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 8px;
+  width: calc(33% - 20px);
+  box-sizing: border-box;
+}
+
+.dish h3 {
+  margin: 0 0 10px;
+}
+
+.dish p {
+  margin: 0 0 10px;
+}
+
+.dish span {
+  font-weight: bold;
+}
