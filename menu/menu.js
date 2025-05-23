@@ -1,17 +1,14 @@
 // menu.js
 
-// 1) Fetch data from your Google Sheet (publish the sheet and replace with its ID)
-window.onload = () => {
+window.onload = function() {
   Tabletop.init({
-    key: '2PACX-1vR6M2Q4ZaQLOA7tVS2d1ee_DGcfdjn0ziRnyiJLUpsHeLJFVcBIFiTorAfgfWBFGQB8Hrck--5EdW10',
-
+    key: '2PACX-1vR6Q4ZaQLOA7tVS2d1ee_DGcfdjn0ziRnyiJLUpsHeLJFVcBIFiTorAfgfWBFGQB8Hrck--5EdW10',
     callback: processData,
-    simpleSheet: true,
-    // sheetName: 'YourTabName' // ← uncomment & change if you want a specific tab
+    simpleSheet: true
+    // sheetName: 'Menu' // uncomment & change if you need a specific tab
   });
 };
 
-// 2) Turn flat rows into a nested Level → Unit → Topic structure
 function buildHierarchy(rows) {
   const map = {};
 
@@ -37,16 +34,14 @@ function buildHierarchy(rows) {
   }));
 }
 
-// 3) Kick off hierarchy build, then render
 function processData(rows) {
   const nested = buildHierarchy(rows);
   showNestedMenu(nested);
 }
 
-// 4) Render nested levels, units, and topics into #menu-container
 function showNestedMenu(levels) {
   const container = document.getElementById('menu-container');
-  container.innerHTML = '';  // clear any old content
+  container.innerHTML = '';
 
   levels.forEach(({ level, units }) => {
     const levelEl = document.createElement('div');
