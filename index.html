@@ -1,71 +1,65 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Italian Accent TTS Tester</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#ffffff">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <link rel="manifest" href="manifest.json">
-  <link rel="icon" href="icon-192.png">
-  <style>
-    body { font-family: sans-serif; padding: 20px; max-width: 600px; margin: auto; }
-    button { margin: 5px 0; padding: 10px; font-size: 1rem; width: 100%; }
-    input { width: 100%; padding: 10px; font-size: 1rem; margin-bottom: 20px; }
-  </style>
-</head>
-<body>
-  <h1>🎤 Italian TTS Voice Tester</h1>
-  <p>Click a voice to hear this phrase in a local Italian accent:</p>
-  <input type="text" id="phrase" value="Buongiorno, come stai?">
-  <div id="voice-buttons"><p>Loading voices...</p></div>
+<script>
+  const voiceButtonsContainer = document.getElementById("voice-buttons");
 
-  <script>
-    function speakWithVoice(voice) {
-      const phrase = document.getElementById('phrase').value;
-      const utterance = new SpeechSynthesisUtterance(phrase);
-      utterance.voice = voice;
-      speechSynthesis.cancel();
-      speechSynthesis.speak(utterance);
+  function speakWithVoice(voice) {
+    const phrase = document.getElementById("phrase").value;
+    const utterance = new SpeechSynthesisUtterance(phrase);
+    utterance.voice = voice;
+    speechSynthesis.cancel();
+    speechSynthesis.speak(utterance);
+  }
+
+  function displayVoices() {
+    const voices = speechSynthesis.getVoices();
+    const italianVoices = voices.filter(v => v.lang.startsWith("it"));
+    voiceButtonsContainer.innerHTML = "";
+
+    if (italianVoices.length === 0) {
+      voiceButtonsContainer.innerHTML = `
+        <p>No Italian voices detected.<br>
+        Go to <strong>Settings → Accessibility → Spoken Content → Voices → Italian</strong><br>
+        and download Luca (Enhanced).</p>`;
+      return;
     }
 
-    function loadVoices() {
+    // Try to auto-select Luca (Enhanced) if present
+    const lucaVoice = italianVoices.find(v => v.name.toLowerCase().includes("luca"));
+
+    if (lucaVoice) {
+      const autoBtn = document.createElement("button");
+      autoBtn.textContent = `🔊 Speak with preferred: ${lucaVoice.name}`;
+      autoBtn.onclick = () => speakWithVoice(lucaVoice);
+      voiceButtonsContainer.appendChild(autoBtn);
+    }
+
+    italianVoices.forEach(voice => {
+      const btn = document.createElement("button");
+      btn.textContent = `${voice.name} (${voice.lang})`;
+      btn.onclick = () => speakWithVoice(voice);
+      voiceButtonsContainer.appendChild(btn);
+    });
+  }
+
+  function waitForVoices(maxTries = 10) {
+    let tries = 0;
+
+    const interval = setInterval(() => {
       const voices = speechSynthesis.getVoices();
-      const italianVoices = voices.filter(v => v.lang.startsWith('it'));
-      const container = document.getElementById('voice-buttons');
-      container.innerHTML = '';
-
-      if (italianVoices.length === 0) {
-        container.innerHTML = `
-          <p>No Italian voices were detected on this device.</p>
-          <p>To enable more, go to: <br><strong>Settings → Accessibility → Spoken Content → Voices → Italian</strong><br>Then download extra voices.</p>
-        `;
-        return;
+      if (voices.length > 1 || tries >= maxTries) {
+        clearInterval(interval);
+        displayVoices();
       }
+      tries++;
+    }, 250);
+  }
 
-      italianVoices.forEach(voice => {
-        const btn = document.createElement('button');
-        btn.textContent = `${voice.name} (${voice.lang})`;
-        btn.onclick = () => speakWithVoice(voice);
-        container.appendChild(btn);
-      });
+  document.addEventListener("DOMContentLoaded", () => {
+    if (typeof speechSynthesis === "undefined") {
+      voiceButtonsContainer.innerHTML = "<p>Speech synthesis not supported in this browser.</p>";
+      return;
     }
 
-    function loadVoicesWithRetry(attempts = 5) {
-      const voices = speechSynthesis.getVoices();
-      if (voices.length > 1 || attempts === 0) {
-        loadVoices();
-      } else {
-        setTimeout(() => loadVoicesWithRetry(attempts - 1), 250);
-      }
-    }
-
-    if (typeof speechSynthesis !== 'undefined') {
-      speechSynthesis.onvoiceschanged = loadVoices;
-      loadVoicesWithRetry(); // fallback for iOS
-    } else {
-      document.getElementById('voice-buttons').innerHTML = '<p>Your browser does not support speech synthesis.</p>';
-    }
-  </script>
-</body>
-</html>
+    speechSynthesis.getVoices(); // Trigger voice population
+    waitForVoices();
+  });
+</script>
