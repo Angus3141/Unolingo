@@ -1,5 +1,8 @@
 // menu/menu.js
 
+console.log("menu.js loaded");
+
+
 // 1) Put your published Sheet’s ID here, in straight ASCII quotes:
 const SHEET_ID = "2PACX-1vR6M2Q4ZaQLOA7tVS2d1ee_DGcfdjn0ziRnyiJLUpsHeLJFVcBIFiTorAfgfWBFGQB8Hrck--5EdW10";
 
