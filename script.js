@@ -1,6 +1,5 @@
-<script>
+document.addEventListener("DOMContentLoaded", () => {
   const voiceButtonsContainer = document.getElementById("voice-buttons");
-  let voicesLoaded = false;
 
   function speakWithVoice(voice) {
     const phrase = document.getElementById("phrase").value;
@@ -18,9 +17,18 @@
     if (italianVoices.length === 0) {
       voiceButtonsContainer.innerHTML = `
         <p>No Italian voices detected.<br>
-        Go to <strong>Settings → Accessibility → Spoken Content → Voices → Italian</strong><br>
-        and download more.</p>`;
+        To enable more, go to:<br>
+        <strong>Settings → Accessibility → Spoken Content → Voices → Italian</strong><br>
+        and download additional voices like <strong>Luca (Enhanced)</strong>.</p>`;
       return;
+    }
+
+    const luca = italianVoices.find(v => v.name.toLowerCase().includes("luca"));
+    if (luca) {
+      const autoBtn = document.createElement("button");
+      autoBtn.textContent = `🔊 Speak with preferred: ${luca.name}`;
+      autoBtn.onclick = () => speakWithVoice(luca);
+      voiceButtonsContainer.appendChild(autoBtn);
     }
 
     italianVoices.forEach(voice => {
@@ -29,11 +37,12 @@
       btn.onclick = () => speakWithVoice(voice);
       voiceButtonsContainer.appendChild(btn);
     });
+
+    console.log("Loaded Italian voices:", italianVoices.map(v => v.name));
   }
 
-  function waitForVoices(maxTries = 10) {
+  function waitForVoices(maxTries = 20) {
     let tries = 0;
-
     const interval = setInterval(() => {
       const voices = speechSynthesis.getVoices();
       if (voices.length > 1 || tries >= maxTries) {
@@ -41,17 +50,14 @@
         displayVoices();
       }
       tries++;
-    }, 250);
+    }, 300);
   }
 
-  document.addEventListener("DOMContentLoaded", () => {
-    if (typeof speechSynthesis === "undefined") {
-      voiceButtonsContainer.innerHTML = "<p>Speech synthesis not supported in this browser.</p>";
-      return;
-    }
-
-    // Trigger voice loading (iOS workaround)
-    speechSynthesis.getVoices();
+  if (typeof speechSynthesis !== "undefined") {
+    speechSynthesis.cancel();
+    speechSynthesis.onvoiceschanged = displayVoices;
     waitForVoices();
-  });
-</script>
+  } else {
+    voiceButtonsContainer.innerHTML = "<p>Speech synthesis is not supported in this browser.</p>";
+  }
+});
