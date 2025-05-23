@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Italian Accent TTS Tester</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; }
+    button { margin: 5px; padding: 10px; font-size: 1rem; }
+  </style>
+</head>
+<body>
+  <h1>🎤 Italian TTS Voice Tester</h1>
+  <p>Click a voice to hear the phrase in that Italian accent:</p>
+  <input type="text" id="phrase" value="Buongiorno, come stai?" style="width: 100%; padding: 10px; font-size: 1rem;">
+  <div id="voice-buttons"></div>
+
+  <script>
+    function speakWithVoice(voice) {
+      const phrase = document.getElementById('phrase').value;
+      const utterance = new SpeechSynthesisUtterance(phrase);
+      utterance.voice = voice;
+      window.speechSynthesis.speak(utterance);
+    }
+
+    function loadVoices() {
+      const voices = speechSynthesis.getVoices();
+      const italianVoices = voices.filter(v => v.lang.startsWith('it'));
+      const container = document.getElementById('voice-buttons');
+      container.innerHTML = '';
+
+      if (italianVoices.length === 0) {
+        container.innerHTML = '<p>No Italian voices found. Try using Chrome or Safari.</p>';
+        return;
+      }
+
+      italianVoices.forEach(voice => {
+        const btn = document.createElement('button');
+        btn.textContent = `${voice.name} (${voice.lang})`;
+        btn.onclick = () => speakWithVoice(voice);
+        container.appendChild(btn);
+      });
+    }
+
+    window.speechSynthesis.onvoiceschanged = loadVoices;
+    loadVoices();
+  </script>
+</body>
+</html>
