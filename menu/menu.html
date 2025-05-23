@@ -1,19 +1,18 @@
-<!-- menu/index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Italian Menu</title>
-  <!-- correct: file is in the same folder as index.html -->
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <h1>Italian Menu</h1>
   <div id="menu-container"></div>
 
-  <!-- correct CDN and path to your local JS -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/tabletop.js/1.5.4/tabletop.min.js"></script>
+  <!-- 1) Load Tabletop.js library -->
+  <script src="https://unpkg.com/tabletop@1.5.4/dist/tabletop.min.js"></script>
+  <!-- 2) Your menu logic -->
   <script src="menu.js"></script>
 </body>
 </html>
