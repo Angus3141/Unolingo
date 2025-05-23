@@ -3,8 +3,8 @@
 // 1) Fetch data from your Google Sheet (publish the sheet and replace with its ID)
 window.onload = () => {
   Tabletop.init({
-    key: '2PACX-1vR6M2Q4ZaQLOA7tVS2d1ee_DGcfdjn0ziRnyiJLUpsHeLJFVcBIFiTorAfgfWBFGQB8Hrck--5EdW10
-',      // ← replace with your Sheet ID
+    key: '2PACX-1vR6M2Q4ZaQLOA7tVS2d1ee_DGcfdjn0ziRnyiJLUpsHeLJFVcBIFiTorAfgfWBFGQB8Hrck--5EdW10',
+
     callback: processData,
     simpleSheet: true,
     // sheetName: 'YourTabName' // ← uncomment & change if you want a specific tab
