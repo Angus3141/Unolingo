@@ -2,29 +2,47 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#ffffff">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-
   <title>Italian Accent TTS Tester</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icon-192.png">
   <style>
-    body { font-family: sans-serif; padding: 20px; }
-    button { margin: 5px; padding: 10px; font-size: 1rem; }
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+      max-width: 600px;
+      margin: auto;
+    }
+    button {
+      margin: 5px 0;
+      padding: 10px;
+      font-size: 1rem;
+      width: 100%;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      font-size: 1rem;
+      margin-bottom: 20px;
+    }
   </style>
 </head>
 <body>
   <h1>🎤 Italian TTS Voice Tester</h1>
-  <p>Click a voice to hear the phrase in that Italian accent:</p>
-  <input type="text" id="phrase" value="Buongiorno, come stai?" style="width: 100%; padding: 10px; font-size: 1rem;">
-  <div id="voice-buttons"></div>
+  <p>Click a voice to hear this phrase in different Italian accents:</p>
+  <input type="text" id="phrase" value="Buongiorno, come stai?">
+  <div id="voice-buttons"><p>Loading voices...</p></div>
 
   <script>
     function speakWithVoice(voice) {
       const phrase = document.getElementById('phrase').value;
       const utterance = new SpeechSynthesisUtterance(phrase);
       utterance.voice = voice;
-      window.speechSynthesis.speak(utterance);
+      speechSynthesis.cancel(); // cancel anything queued
+      speechSynthesis.speak(utterance);
     }
 
     function loadVoices() {
@@ -34,7 +52,7 @@
       container.innerHTML = '';
 
       if (italianVoices.length === 0) {
-        container.innerHTML = '<p>No Italian voices found. Try using Chrome or Safari.</p>';
+        container.innerHTML = '<p>No Italian voices found. Try using Chrome or Safari and reload the page.</p>';
         return;
       }
 
@@ -46,8 +64,11 @@
       });
     }
 
-    window.speechSynthesis.onvoiceschanged = loadVoices;
-    loadVoices();
+    if (typeof speechSynthesis !== 'undefined') {
+      speechSynthesis.onvoiceschanged = loadVoices;
+    } else {
+      document.getElementById('voice-buttons').innerHTML = '<p>Your browser does not support speech synthesis.</p>';
+    }
   </script>
 </body>
 </html>
